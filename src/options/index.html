@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Email Hunter — Options</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <h1>GitHub Email Hunter</h1>
+      <p class="lede">
+        This extension finds personal email addresses already public in GitHub commit metadata.
+        All data stays in your browser; nothing is sent anywhere except to
+        <code>api.github.com</code>.
+      </p>
+
+      <section>
+        <h2>Personal Access Token (optional)</h2>
+        <p>
+          Without a token, GitHub allows only <strong>60 API requests/hour</strong>. With a token
+          (any classic or fine-grained PAT, no scopes required), the limit becomes
+          <strong>5,000/hour</strong>.
+        </p>
+        <p>
+          Create one at
+          <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noreferrer"
+            >github.com/settings/tokens</a
+          >. No scopes are needed for public-data reads.
+        </p>
+        <form id="pat-form">
+          <label for="pat">Token</label>
+          <input
+            id="pat"
+            name="pat"
+            type="password"
+            autocomplete="off"
+            placeholder="github_pat_… or ghp_…"
+          />
+          <div class="row">
+            <button type="submit" id="save">Save</button>
+            <button type="button" id="clear" class="secondary">Remove token</button>
+            <span id="status" class="status"></span>
+          </div>
+        </form>
+      </section>
+
+      <section>
+        <h2>Cache</h2>
+        <p>Scan results are cached locally for 24 hours.</p>
+        <button type="button" id="clear-cache" class="secondary">Clear cached results</button>
+      </section>
+
+      <section>
+        <h2>Privacy &amp; responsible use</h2>
+        <p>
+          Commit author emails are technically public — they live inside <code>git log</code> for
+          every public repository on GitHub. This extension surfaces what's already there. Even
+          so, please use it responsibly: do not bulk-scrape, do not spam, and if a user has set a
+          privacy-proxy (<code>users.noreply.github.com</code>), respect it.
+        </p>
+        <p>
+          To hide your own email, enable
+          <em>"Keep my email addresses private"</em> in your GitHub email settings, and configure
+          your local <code>git config user.email</code> to match the proxy address GitHub
+          provides.
+        </p>
+      </section>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

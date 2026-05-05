@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Email Hunter</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="hdr">
+      <h1>GitHub Email Hunter</h1>
+      <a class="opt-link" href="#" id="open-options">Options</a>
+    </header>
+
+    <form id="form" class="form">
+      <input
+        id="input"
+        type="text"
+        placeholder="github.com/username  or  username"
+        autocomplete="off"
+        autocorrect="off"
+        spellcheck="false"
+      />
+      <button id="submit" type="submit">Find</button>
+    </form>
+
+    <div id="result" class="result"></div>
+
+    <section id="history" class="history">
+      <header>
+        <h2>Recent</h2>
+        <button id="clear" type="button" class="link">Clear</button>
+      </header>
+      <ul id="history-list"></ul>
+    </section>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
