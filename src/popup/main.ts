@@ -10,10 +10,16 @@ const result = document.getElementById('result') as HTMLElement;
 const historyList = document.getElementById('history-list') as HTMLUListElement;
 const clearBtn = document.getElementById('clear') as HTMLButtonElement;
 const optionsLink = document.getElementById('open-options') as HTMLAnchorElement;
+const crawlLink = document.getElementById('open-crawl') as HTMLAnchorElement;
 
 optionsLink.addEventListener('click', (e) => {
   e.preventDefault();
   chrome.runtime.openOptionsPage();
+});
+
+crawlLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  chrome.tabs.create({ url: chrome.runtime.getURL('src/crawl/index.html') });
 });
 
 form.addEventListener('submit', (e) => {

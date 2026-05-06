@@ -23,6 +23,10 @@ export default defineManifest({
       run_at: 'document_idle',
     },
   ],
-  permissions: ['storage'],
+  permissions: ['storage', 'unlimitedStorage', 'offscreen', 'downloads', 'alarms'],
   host_permissions: ['https://api.github.com/*', 'https://github.com/*'],
+  // No web_accessible_resources needed: crawl and offscreen are extension-internal
+  // pages compiled via rollupOptions.input in vite.config.ts. chrome.offscreen
+  // and chrome.tabs.create work with any extension URL without web accessibility.
+  web_accessible_resources: [],
 });

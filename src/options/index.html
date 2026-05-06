@@ -10,60 +10,57 @@
     <main>
       <h1>GitHub Email Hunter</h1>
       <p class="lede">
-        This extension finds personal email addresses already public in GitHub commit metadata.
         All data stays in your browser; nothing is sent anywhere except to
         <code>api.github.com</code>.
       </p>
 
       <section>
-        <h2>Personal Access Token (optional)</h2>
+        <h2>Personal Access Tokens</h2>
         <p>
           Without a token, GitHub allows only <strong>60 API requests/hour</strong>. With a token
-          (any classic or fine-grained PAT, no scopes required), the limit becomes
-          <strong>5,000/hour</strong>.
+          (any classic or fine-grained PAT, no scopes required), <strong>5,000/hour</strong>.
         </p>
-        <p>
-          Create one at
-          <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noreferrer"
-            >github.com/settings/tokens</a
-          >. No scopes are needed for public-data reads.
+        <p class="warn">
+          ⚠ <strong>About multiple tokens:</strong> GitHub rate-limits per <em>account</em>, not
+          per token. Two PATs from the same GitHub account share the same 5,000/hr bucket — they
+          give you no extra throughput. To actually parallelize a crawl, you need PATs from
+          different GitHub accounts (e.g. teammates contributing their own tokens). Creating
+          additional accounts solely to bypass rate limits violates GitHub's Acceptable Use Policy.
         </p>
-        <form id="pat-form">
-          <label for="pat">Token</label>
-          <input
-            id="pat"
-            name="pat"
-            type="password"
-            autocomplete="off"
-            placeholder="github_pat_… or ghp_…"
-          />
-          <div class="row">
-            <button type="submit" id="save">Save</button>
-            <button type="button" id="clear" class="secondary">Remove token</button>
-            <span id="status" class="status"></span>
+
+        <form id="add-form">
+          <label for="pat">Add a token</label>
+          <div class="row inline">
+            <input
+              id="pat"
+              type="password"
+              autocomplete="off"
+              placeholder="github_pat_… or ghp_…"
+            />
+            <input id="label" type="text" placeholder="Label (optional)" />
+            <button type="submit" id="add">Add</button>
           </div>
+          <span id="status" class="status"></span>
         </form>
+
+        <div id="token-list" class="token-list"></div>
+
+        <div id="effective" class="effective"></div>
       </section>
 
       <section>
         <h2>Cache</h2>
-        <p>Scan results are cached locally for 24 hours.</p>
+        <p>Single-profile lookup results are cached locally for 24 hours.</p>
         <button type="button" id="clear-cache" class="secondary">Clear cached results</button>
       </section>
 
       <section>
         <h2>Privacy &amp; responsible use</h2>
         <p>
-          Commit author emails are technically public — they live inside <code>git log</code> for
-          every public repository on GitHub. This extension surfaces what's already there. Even
-          so, please use it responsibly: do not bulk-scrape, do not spam, and if a user has set a
-          privacy-proxy (<code>users.noreply.github.com</code>), respect it.
-        </p>
-        <p>
-          To hide your own email, enable
-          <em>"Keep my email addresses private"</em> in your GitHub email settings, and configure
-          your local <code>git config user.email</code> to match the proxy address GitHub
-          provides.
+          Commit author emails are technically public. Even so, please use this tool
+          responsibly: do not bulk-spam, do not redistribute the data, and respect users
+          who set the GitHub privacy proxy (<code>users.noreply.github.com</code>). Bulk
+          collection of EU-resident contact data is regulated by GDPR.
         </p>
       </section>
     </main>

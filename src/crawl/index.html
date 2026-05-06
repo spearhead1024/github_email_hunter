@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Email Hunter — Bulk Crawl</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <span class="brand">⚡ GitHub Email Hunter</span>
+      <a id="open-options" href="#" class="header-link">Options →</a>
+    </header>
+
+    <div class="page">
+
+      <!-- ── SETUP VIEW ───────────────────────────────────────── -->
+      <div id="view-setup">
+        <div class="card">
+          <h2 class="card-heading">New Crawl</h2>
+          <form id="form">
+
+            <div class="field-group">
+              <label for="search-url">GitHub search URL or query</label>
+              <input
+                id="search-url"
+                type="text"
+                placeholder="https://github.com/search?q=location:Poland&type=Users"
+                autocomplete="off"
+                spellcheck="false"
+              />
+              <p class="hint">Paste a GitHub user-search URL, or a bare query like <code>location:Poland language:Rust</code>.</p>
+            </div>
+
+            <div class="config-row">
+              <div class="field-group">
+                <label>Limit</label>
+                <div class="limit-row">
+                  <label class="radio-label">
+                    <input type="radio" name="limit-mode" value="number" checked />
+                    First
+                  </label>
+                  <input id="limit-number" type="number" min="1" max="100000" value="1000" />
+                  <span class="unit">users</span>
+                  <label class="radio-label">
+                    <input type="radio" name="limit-mode" value="all" />
+                    All
+                  </label>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label>Output fields</label>
+                <div class="field-checks">
+                  <label class="check-label">
+                    <input type="checkbox" name="field" value="full_name" checked />
+                    <span class="field-name">full_name</span>
+                    <span class="badge badge-free">free</span>
+                  </label>
+                  <label class="check-label">
+                    <input type="checkbox" name="field" value="created_at" checked />
+                    <span class="field-name">created_at</span>
+                    <span class="badge badge-free">free</span>
+                  </label>
+                  <label class="check-label">
+                    <input type="checkbox" name="field" value="emails" checked />
+                    <span class="field-name">emails</span>
+                    <span class="badge badge-cost">1 call / user</span>
+                  </label>
+                  <label class="check-label">
+                    <input type="checkbox" name="field" value="last_commit_date" checked />
+                    <span class="field-name">last_commit</span>
+                    <span class="badge badge-cost">shared</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div id="cost-est" class="cost-est"></div>
+
+            <label class="check-label fallback-label">
+              <input type="checkbox" id="fallback" />
+              <span>Search-Commits fallback for inactive users</span>
+              <span class="hint inline">(uses search quota, slower)</span>
+            </label>
+
+            <div class="form-footer">
+              <span id="form-error" class="form-error" hidden></span>
+              <button type="submit" id="start-btn" class="btn btn-primary btn-lg">Start Crawl</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ── RUNNING VIEW ─────────────────────────────────────── -->
+      <div id="view-running" hidden>
+        <div class="card job-card">
+
+          <div class="job-header">
+            <span id="job-status-pill" class="status-pill status-idle">—</span>
+            <span id="job-title" class="job-title"></span>
+            <span id="job-time" class="job-time"></span>
+          </div>
+
+          <div id="progress-enum" class="progress-section">
+            <div class="progress-label">
+              <span>Phase 1 — Enumeration</span>
+              <span id="enum-stats" class="progress-nums">—</span>
+            </div>
+            <div class="progress-track">
+              <div id="enum-bar" class="progress-fill"></div>
+            </div>
+          </div>
+
+          <div id="progress-enrich" class="progress-section" hidden>
+            <div class="progress-label">
+              <span>Phase 2 — Enrichment</span>
+              <span id="enrich-stats" class="progress-nums">—</span>
+            </div>
+            <div class="progress-track">
+              <div id="enrich-bar" class="progress-fill"></div>
+            </div>
+          </div>
+
+          <div id="job-error" class="job-error" hidden></div>
+
+          <div class="job-controls">
+            <div class="controls-left">
+              <button id="pause-btn"   class="btn btn-secondary" hidden>⏸ Pause</button>
+              <button id="resume-btn"  class="btn btn-secondary" hidden>▶ Resume</button>
+              <button id="cancel-btn"  class="btn btn-danger"    hidden>✕ Cancel</button>
+              <button id="new-job-btn" class="btn btn-secondary" hidden>+ New Job</button>
+            </div>
+            <button id="export-btn" class="btn btn-primary" disabled>↓ Export CSV</button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── TOKEN PANEL ──────────────────────────────────────── -->
+      <details id="tokens-panel" class="panel">
+        <summary class="panel-summary">
+          <span class="panel-title">Token Usage</span>
+          <span id="tokens-meta" class="panel-meta"></span>
+          <span class="chevron" aria-hidden="true">›</span>
+        </summary>
+        <div id="tokens-body" class="panel-body">
+          <p class="muted">Start a crawl to see live token usage.</p>
+        </div>
+      </details>
+
+      <!-- ── JOBS PANEL ───────────────────────────────────────── -->
+      <details id="jobs-panel" class="panel" open>
+        <summary class="panel-summary">
+          <span class="panel-title">Recent Jobs</span>
+          <span id="jobs-badge" class="jobs-badge" hidden></span>
+          <span class="chevron" aria-hidden="true">›</span>
+        </summary>
+        <div id="jobs-list" class="panel-body">
+          <p class="muted">No jobs yet.</p>
+        </div>
+      </details>
+
+    </div><!-- .page -->
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
